@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Schema file for PKCS #5 v2.0 -->
+<!-- $Revision: 1.1 $ $Date: 2006/03/28 18:30:15 $ -->
+<!-- Copyright (c) RSA Security Inc. 2006. All rights reserved. -->
+<!-- License to copy and use this schema file is granted provided that it is identified as "RSA Security Inc. Public Key Cryptography 
+  Standard #5 (PKCS #5): Password-based Encryption Version 2.0" in all material mentioning or referencing it. RSA Security Inc. makes no 
+  representations concerning either the merchantability of this schema or the suitability of this schema for any particular purpose. It 
+  is provided "as is" without express or implied warranty of any kind. -->
+<xs:schema targetNamespace="http://www.rsasecurity.com/rsalabs/pkcs/schemas/pkcs-5v2-0#" xmlns="http://www.rsasecurity.com/rsalabs/pkcs/schemas/pkcs-5v2-0#"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:import namespace="http://www.w3.org/2001/04/xmlenc#" schemaLocation="xenc-schema.xsd"/>
+
+  <!-- Basic types -->
+  <xs:complexType name="AlgorithmIdentifierType">
+    <xs:sequence>
+      <xs:element name="Parameters" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="Algorithm" />
+  </xs:complexType>
+  <xs:complexType name="SaltAlgorithmIdentifierType">
+    <xs:complexContent>
+      <xs:restriction base="AlgorithmIdentifierType">
+        <xs:attribute name="Algorithm" type="xs:anyURI" default="http://www.w3.org/2000/09/xmldsig#hmac-sha1http://www.w3c.org/hmac-sha1" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PRFAlgorithmIdentifierType">
+    <xs:complexContent>
+      <xs:restriction base="AlgorithmIdentifierType">
+        <xs:attribute name="Algorithm" type="xs:anyURI" default="http://www.w3.org/2000/09/xmldsig#hmac-sha1http://www.w3c.org/hmac-sha1" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PBKDF2ParameterType">
+    <xs:sequence>
+      <xs:element name="Salt">
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="Specified" type="xs:base64Binary" />
+            <xs:element name="OtherSource" type="SaltAlgorithmIdentifierType" />
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="IterationCount" type="xs:positiveInteger" />
+      <xs:element name="KeyLength" type="xs:positiveInteger" minOccurs="0" />
+      <xs:element name="PRF" type="PRFAlgorithmIdentifierType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PBES2ParameterType">
+    <xs:sequence>
+      <xs:element name="KeyDerivationFunc" type="AlgorithmIdentifierType" />
+      <xs:element name="EncryptionScheme" type="xenc:EncryptionMethodType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PBMAC1ParameterType">
+    <xs:sequence>
+      <xs:element name="KeyDerivationFunc" type="AlgorithmIdentifierType" />
+      <xs:element name="MessageAuthScheme" type="ds:SignatureMethodType" />
+    </xs:sequence>
+  </xs:complexType>
+  <!-- Exports -->
+  <xs:element name="PBKDF2-params" type="PBKDF2ParameterType" />
+  <xs:element name="PBES2-params" type="PBES2ParameterType" />
+  <xs:element name="PBMAC1-params" type="PBMAC1ParameterType" />
+</xs:schema>
